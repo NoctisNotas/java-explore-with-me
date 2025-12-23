@@ -1,16 +1,20 @@
-package ru.practicum.ewm.dto;
+package ru.practicum.explorewithme.stats.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EndpointHitDto {
+public class Hit {
     private Long id;
     private String app;
     private String uri;
     private String ip;
-    private String timestamp;
+    private LocalDateTime created;
 }

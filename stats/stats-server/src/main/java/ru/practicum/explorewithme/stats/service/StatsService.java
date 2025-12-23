@@ -1,10 +1,10 @@
-package ru.practicum.ewm.service;
+package ru.practicum.explorewithme.stats.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.dto.EndpointHitDto;
-import ru.practicum.ewm.dto.ViewStatsDto;
-import ru.practicum.ewm.repository.StatsRepository;
+import ru.practicum.explorewithme.stats.dto.EndpointHitDto;
+import ru.practicum.explorewithme.stats.dto.ViewStatsDto;
+import ru.practicum.explorewithme.stats.repository.StatsRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;

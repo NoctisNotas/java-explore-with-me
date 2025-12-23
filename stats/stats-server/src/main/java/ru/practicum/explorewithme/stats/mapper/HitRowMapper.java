@@ -1,4 +1,4 @@
-package ru.practicum.ewm.mapper;
+package ru.practicum.explorewithme.stats.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
 import ru.practicum.ewm.model.Hit;

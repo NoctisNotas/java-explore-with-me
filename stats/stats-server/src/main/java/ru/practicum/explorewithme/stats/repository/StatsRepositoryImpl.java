@@ -1,33 +1,39 @@
-package ru.practicum.ewm.repository;
+package ru.practicum.explorewithme.stats.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.practicum.ewm.dto.EndpointHitDto;
-import ru.practicum.ewm.dto.ViewStatsDto;
-import ru.practicum.ewm.mapper.ViewStatsRowMapper;
+import ru.practicum.explorewithme.stats.dto.EndpointHitDto;
+import ru.practicum.explorewithme.stats.dto.ViewStatsDto;
+import ru.practicum.explorewithme.stats.mapper.ViewStatsRowMapper;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class StatsRepositoryImpl implements StatsRepository {
 
+    private static final DateTimeFormatter FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
     @Override
     public void saveHit(EndpointHitDto hit) {
+        LocalDateTime timestamp = LocalDateTime.parse(hit.getTimestamp(), FORMATTER);
+
         jdbcTemplate.update(
                 "INSERT INTO hits (app, uri, ip, created) VALUES (?, ?, ?, ?)",
                 hit.getApp(),
                 hit.getUri(),
                 hit.getIp(),
-                Timestamp.valueOf(hit.getTimestamp())
+                Timestamp.valueOf(timestamp)
         );
     }
 
@@ -56,13 +62,8 @@ public class StatsRepositoryImpl implements StatsRepository {
             params.addValue("uris", uris);
         }
 
-        sql.append("GROUP BY app, uri ")
-                .append("ORDER BY hits DESC");
+        sql.append("GROUP BY app, uri ").append("ORDER BY hits DESC");
 
-        return namedJdbcTemplate.query(
-                sql.toString(),
-                params,
-                new ViewStatsRowMapper()
-        );
+        return namedJdbcTemplate.query(sql.toString(), params, new ViewStatsRowMapper());
     }
 }

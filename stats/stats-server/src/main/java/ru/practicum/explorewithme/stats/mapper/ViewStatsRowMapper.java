@@ -1,7 +1,7 @@
-package ru.practicum.ewm.mapper;
+package ru.practicum.explorewithme.stats.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import ru.practicum.ewm.dto.ViewStatsDto;
+import ru.practicum.explorewithme.stats.dto.ViewStatsDto;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

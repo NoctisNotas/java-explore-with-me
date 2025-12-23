@@ -1,11 +1,12 @@
-package ru.practicum.ewm.controller;
+package ru.practicum.explorewithme.stats.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.dto.EndpointHitDto;
-import ru.practicum.ewm.dto.ViewStatsDto;
-import ru.practicum.ewm.service.StatsService;
+import ru.practicum.explorewithme.stats.dto.EndpointHitDto;
+import ru.practicum.explorewithme.stats.dto.ViewStatsDto;
+import ru.practicum.explorewithme.stats.service.StatsService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,6 +18,7 @@ public class StatsController {
     private final StatsService statsService;
 
     @PostMapping("/hit")
+    @ResponseStatus(HttpStatus.CREATED)
     public void saveHit(@RequestBody EndpointHitDto endpointHitDto) {
         statsService.saveHit(endpointHitDto);
     }
@@ -28,6 +30,11 @@ public class StatsController {
             @RequestParam(required = false) List<String> uris,
             @RequestParam(defaultValue = "false") boolean unique
     ) {
+
+        if (start.isAfter(end)) {
+            throw new IllegalArgumentException("Start date must be before end date");
+        }
+
         return statsService.getStats(start, end, uris, unique);
     }
 }

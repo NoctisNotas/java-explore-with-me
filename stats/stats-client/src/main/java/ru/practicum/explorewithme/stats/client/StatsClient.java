@@ -1,13 +1,15 @@
-package ru.practicum.ewm.client;
+package ru.practicum.explorewithme.stats.client;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.practicum.ewm.dto.EndpointHitDto;
-import ru.practicum.ewm.dto.ViewStatsDto;
+import ru.practicum.explorewithme.stats.dto.EndpointHitDto;
+import ru.practicum.explorewithme.stats.dto.ViewStatsDto;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -39,14 +41,18 @@ public class StatsClient {
             List<String> uris,
             boolean unique
     ) {
+
+        String encodedStart = URLEncoder.encode(start.format(FORMATTER), StandardCharsets.UTF_8);
+        String encodedEnd = URLEncoder.encode(end.format(FORMATTER), StandardCharsets.UTF_8);
+
         UriComponentsBuilder builder = UriComponentsBuilder
                 .fromHttpUrl(serverUrl + "/stats")
-                .queryParam("start", start.format(FORMATTER))
-                .queryParam("end", end.format(FORMATTER))
+                .queryParam("start", encodedStart)
+                .queryParam("end", encodedEnd)
                 .queryParam("unique", unique);
 
         if (uris != null && !uris.isEmpty()) {
-            uris.forEach(uri -> builder.queryParam("uris", uri));
+            builder.queryParam("uris", String.join(",", uris));
         }
 
         ResponseEntity<ViewStatsDto[]> response =
@@ -57,6 +63,6 @@ public class StatsClient {
                         ViewStatsDto[].class
                 );
 
-        return Arrays.asList(response.getBody());
+        return response.getBody() != null ? Arrays.asList(response.getBody()) : List.of();
     }
 }
