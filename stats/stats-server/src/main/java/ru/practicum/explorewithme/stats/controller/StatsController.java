@@ -1,5 +1,6 @@
 package ru.practicum.explorewithme.stats.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class StatsController {
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveHit(@RequestBody EndpointHitDto endpointHitDto) {
+    public void saveHit(@Valid @RequestBody EndpointHitDto endpointHitDto) {
         statsService.saveHit(endpointHitDto);
     }
 
@@ -30,11 +31,9 @@ public class StatsController {
             @RequestParam(required = false) List<String> uris,
             @RequestParam(defaultValue = "false") boolean unique
     ) {
-
         if (start.isAfter(end)) {
             throw new IllegalArgumentException("Start date must be before end date");
         }
-
         return statsService.getStats(start, end, uris, unique);
     }
 }

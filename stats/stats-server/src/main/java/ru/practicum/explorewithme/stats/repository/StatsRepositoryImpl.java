@@ -11,29 +11,23 @@ import ru.practicum.explorewithme.stats.mapper.ViewStatsRowMapper;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class StatsRepositoryImpl implements StatsRepository {
 
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
     @Override
     public void saveHit(EndpointHitDto hit) {
-        LocalDateTime timestamp = LocalDateTime.parse(hit.getTimestamp(), FORMATTER);
-
         jdbcTemplate.update(
                 "INSERT INTO hits (app, uri, ip, created) VALUES (?, ?, ?, ?)",
                 hit.getApp(),
                 hit.getUri(),
                 hit.getIp(),
-                Timestamp.valueOf(timestamp)
+                Timestamp.valueOf(hit.getTimestamp())
         );
     }
 

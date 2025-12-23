@@ -1,7 +1,7 @@
 package ru.practicum.explorewithme.stats.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import ru.practicum.ewm.model.Hit;
+import ru.practicum.explorewithme.stats.model.Hit;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
