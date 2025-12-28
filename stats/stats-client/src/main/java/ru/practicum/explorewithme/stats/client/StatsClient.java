@@ -5,6 +5,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import ru.practicum.explorewithme.stats.dto.DateTimePattern;
 import ru.practicum.explorewithme.stats.dto.EndpointHitDto;
 import ru.practicum.explorewithme.stats.dto.ViewStatsDto;
 
@@ -18,7 +19,7 @@ import java.util.List;
 public class StatsClient {
 
     private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter.ofPattern(DateTimePattern.DATE_TIME);
 
     private final RestTemplate restTemplate;
     private final String serverUrl;
@@ -41,7 +42,6 @@ public class StatsClient {
             List<String> uris,
             boolean unique
     ) {
-
         String encodedStart = URLEncoder.encode(start.format(FORMATTER), StandardCharsets.UTF_8);
         String encodedEnd = URLEncoder.encode(end.format(FORMATTER), StandardCharsets.UTF_8);
 
