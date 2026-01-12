@@ -11,14 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
 import ru.practicum.explorewithme.dto.event.UpdateEventAdminRequest;
-import ru.practicum.explorewithme.exception.ValidationException;
 import ru.practicum.explorewithme.model.EventState;
 import ru.practicum.explorewithme.service.EventService;
-import ru.practicum.explorewithme.util.DateTimePattern;
-
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @RestController
