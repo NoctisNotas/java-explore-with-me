@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.explorewithme.util.DateTimePattern;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -77,6 +78,17 @@ public class ErrorHandler {
         return new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.name(),
                 "Internal server error.",
+                e.getMessage(),
+                LocalDateTime.now().format(FORMATTER)
+        );
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+        return new ErrorResponse(
+                HttpStatus.BAD_REQUEST.name(),
+                "Incorrectly made request.",
                 e.getMessage(),
                 LocalDateTime.now().format(FORMATTER)
         );
