@@ -32,27 +32,13 @@ public class AdminEventController {
             @RequestParam(required = false) List<Long> users,
             @RequestParam(required = false) List<EventState> states,
             @RequestParam(required = false) List<Long> categories,
-            @RequestParam(required = false) String rangeStart,
-            @RequestParam(required = false) String rangeEnd,
+            @RequestParam(required = false) @DateTimeFormat LocalDateTime rangeStart,
+            @RequestParam(required = false) @DateTimeFormat LocalDateTime rangeEnd,
             @RequestParam(defaultValue = "0") Integer from,
             @RequestParam(defaultValue = "10") Integer size) {
 
-        LocalDateTime start = null;
-        LocalDateTime end = null;
-
-        try {
-            if (rangeStart != null) {
-                start = LocalDateTime.parse(rangeStart, DateTimeFormatter.ofPattern(DateTimePattern.DATE_TIME));
-            }
-            if (rangeEnd != null) {
-                end = LocalDateTime.parse(rangeEnd, DateTimeFormatter.ofPattern(DateTimePattern.DATE_TIME));
-            }
-        } catch (DateTimeParseException e) {
-            throw new ValidationException("Invalid date format");
-        }
-
         return eventService.getEventsByAdmin(
-                users, states, categories, start, end, from, size);
+                users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @PatchMapping("/admin/events/{eventId}")
