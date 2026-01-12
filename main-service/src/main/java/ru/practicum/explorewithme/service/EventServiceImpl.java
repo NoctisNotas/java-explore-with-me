@@ -195,10 +195,34 @@ public class EventServiceImpl implements EventService {
             Integer from,
             Integer size) {
 
-        log.info("=== DEBUG: getEventsByPublic вызван ===");
+        if (size == null || size <= 0) {
+            throw new ValidationException("Size must be positive");
+        }
+        if (from == null || from < 0) {
+            throw new ValidationException("From must be non-negative");
+        }
 
-        // ВОЗВРАЩАЕМ ПУСТОЙ СПИСОК БЕЗ ЛОГИКИ
-        return List.of();
+        Pageable pageable;
+        if ("EVENT_DATE".equals(sort)) {
+            pageable = PageRequest.of(from / size, size, Sort.by("eventDate").descending());
+        } else {
+            pageable = PageRequest.of(from / size, size);
+        }
+
+        List<Event> events = eventRepository.findEventsByPublic(
+                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, pageable);
+
+        updateEventsWithViews(events);
+
+        List<EventShortDto> result = events.stream()
+                .map(EventMapper::toEventShortDto)
+                .collect(Collectors.toList());
+
+        if ("VIEWS".equals(sort)) {
+            result.sort(Comparator.comparing(EventShortDto::getViews).reversed());
+        }
+
+        return result;
     }
 
     @Override
