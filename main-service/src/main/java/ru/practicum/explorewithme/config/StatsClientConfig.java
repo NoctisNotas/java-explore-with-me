@@ -13,8 +13,12 @@ public class StatsClientConfig {
     private String statsServiceUrl;
 
     @Bean
-    public StatsClient statsClient() {
-        RestTemplate restTemplate = new RestTemplate();
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    public StatsClient statsClient(RestTemplate restTemplate) {
         return new StatsClient(restTemplate, statsServiceUrl);
     }
 }
