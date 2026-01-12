@@ -13,6 +13,7 @@ import ru.practicum.explorewithme.exception.ValidationException;
 import ru.practicum.explorewithme.mapper.CategoryMapper;
 import ru.practicum.explorewithme.model.Category;
 import ru.practicum.explorewithme.repository.CategoryRepository;
+import ru.practicum.explorewithme.repository.EventRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final EventRepository eventRepository;
 
     @Override
     @Transactional
@@ -39,11 +41,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteCategory(Long catId) {
-        if (!categoryRepository.existsById(catId)) {
-            throw new NotFoundException("Category with id=" + catId + " was not found");
+        Category category = categoryRepository.findById(catId)
+                .orElseThrow(() -> new NotFoundException("Category not found"));
+
+        if (eventRepository.countByCategoryId(catId) > 0) {
+            throw new ConflictException("Category has events");
         }
 
-        categoryRepository.deleteById(catId);
+        categoryRepository.delete(category);
     }
 
     @Override
