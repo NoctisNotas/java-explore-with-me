@@ -100,7 +100,7 @@ public class EventServiceImpl implements EventService {
 
         if (updateRequest.getEventDate() != null &&
                 updateRequest.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new ConflictException("Event date must be at least 2 hours from now");
+            throw new ValidationException("Event date must be at least 2 hours from now");
         }
 
         updateEventFields(event, updateRequest);
@@ -154,7 +154,7 @@ public class EventServiceImpl implements EventService {
 
         if (updateRequest.getEventDate() != null &&
                 updateRequest.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
-            throw new ConflictException("Event date must be at least 1 hour from now");
+            throw new ValidationException("Event date must be at least 1 hour from now");
         }
 
         if ("PUBLISH_EVENT".equals(updateRequest.getStateAction())) {

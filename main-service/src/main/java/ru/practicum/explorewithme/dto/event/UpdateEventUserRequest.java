@@ -1,6 +1,7 @@
 package ru.practicum.explorewithme.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,8 @@ public class UpdateEventUserRequest {
 
     private EventLocation location;
     private Boolean paid;
+
+    @Min(0)
     private Integer participantLimit;
     private Boolean requestModeration;
 
