@@ -1,6 +1,7 @@
 package ru.practicum.explorewithme.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
@@ -193,39 +195,10 @@ public class EventServiceImpl implements EventService {
             Integer from,
             Integer size) {
 
-        if (size == null || size <= 0) {
-            throw new ValidationException("Size must be positive");
-        }
+        log.info("=== DEBUG: getEventsByPublic вызван ===");
 
-        if (from == null || from < 0) {
-            throw new ValidationException("From must be non-negative");
-        }
-
-        if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
-            throw new ValidationException("Start date must be before end date");
-        }
-
-        Pageable pageable;
-        if ("EVENT_DATE".equals(sort)) {
-            pageable = PageRequest.of(from / size, size, Sort.by("eventDate").descending());
-        } else {
-            pageable = PageRequest.of(from / size, size);
-        }
-
-        List<Event> events = eventRepository.findEventsByPublic(
-                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, pageable);
-
-        updateEventsWithViews(events);
-
-        List<EventShortDto> result = events.stream()
-                .map(EventMapper::toEventShortDto)
-                .collect(Collectors.toList());
-
-        if ("VIEWS".equals(sort)) {
-            result.sort(Comparator.comparing(EventShortDto::getViews).reversed());
-        }
-
-        return result;
+        // ВОЗВРАЩАЕМ ПУСТОЙ СПИСОК БЕЗ ЛОГИКИ
+        return List.of();
     }
 
     @Override
