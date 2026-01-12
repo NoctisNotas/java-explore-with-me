@@ -64,10 +64,6 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException("User with id=" + userId + " was not found");
         }
 
-        if (size == 0) {
-            size = 10;
-        }
-
         Pageable pageable = PageRequest.of(from / size, size);
         List<Event> events = eventRepository.findByInitiatorId(userId, pageable);
 
@@ -187,10 +183,6 @@ public class EventServiceImpl implements EventService {
             String sort,
             Integer from,
             Integer size) {
-
-        if (size == 0) {
-            size = 10;
-        }
 
         Pageable pageable = PageRequest.of(from / size, size);
 
