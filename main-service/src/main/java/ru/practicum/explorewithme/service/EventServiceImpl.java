@@ -196,8 +196,13 @@ public class EventServiceImpl implements EventService {
         if (size == null || size <= 0) {
             throw new ValidationException("Size must be positive");
         }
+
         if (from == null || from < 0) {
             throw new ValidationException("From must be non-negative");
+        }
+
+        if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
+            throw new ValidationException("Start date must be before end date");
         }
 
         Pageable pageable;
