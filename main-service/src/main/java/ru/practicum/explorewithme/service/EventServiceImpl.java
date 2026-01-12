@@ -64,17 +64,16 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException("User with id=" + userId + " was not found");
         }
 
-        if (size <= 0) {
+        if (from == null || from < 0) {
+            throw new ValidationException("From must be >= 0");
+        }
+        if (size == null || size <= 0) {
             throw new ValidationException("Size must be > 0");
         }
 
-        if (from < 0) {
-            throw new ValidationException("From must be >= 0");
-        }
-
         Pageable pageable = PageRequest.of(from / size, size);
-        List<Event> events = eventRepository.findByInitiatorId(userId, pageable);
 
+        List<Event> events = eventRepository.findByInitiatorId(userId, pageable);
         updateEventsWithViews(events);
 
         return events.stream()
