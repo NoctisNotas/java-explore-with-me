@@ -24,6 +24,7 @@ import ru.practicum.explorewithme.repository.EventRepository;
 import ru.practicum.explorewithme.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -191,24 +192,35 @@ public class EventServiceImpl implements EventService {
             String sort,
             Integer from,
             Integer size) {
+
         if (size == null || size <= 0) {
             throw new ValidationException("Size must be positive");
         }
-
         if (from == null || from < 0) {
             throw new ValidationException("From must be non-negative");
         }
 
-        Pageable pageable = PageRequest.of(from / size, size);
+        Pageable pageable;
+        if ("EVENT_DATE".equals(sort)) {
+            pageable = PageRequest.of(from / size, size, Sort.by("eventDate").descending());
+        } else {
+            pageable = PageRequest.of(from / size, size);
+        }
 
         List<Event> events = eventRepository.findEventsByPublic(
                 text, categories, paid, rangeStart, rangeEnd, onlyAvailable, pageable);
 
         updateEventsWithViews(events);
 
-        return events.stream()
+        List<EventShortDto> result = events.stream()
                 .map(EventMapper::toEventShortDto)
                 .collect(Collectors.toList());
+
+        if ("VIEWS".equals(sort)) {
+            result.sort(Comparator.comparing(EventShortDto::getViews).reversed());
+        }
+
+        return result;
     }
 
     @Override

@@ -40,7 +40,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND (COALESCE(:rangeEnd, e.eventDate) >= e.eventDate) " +
             "AND (:onlyAvailable IS NULL OR " +
             "e.participantLimit = 0 OR " +
-            "e.confirmedRequests < e.participantLimit)")
+            "e.confirmedRequests < e.participantLimit))")
     List<Event> findEventsByPublic(
             String text,
             List<Long> categories,
