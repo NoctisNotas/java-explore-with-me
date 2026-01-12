@@ -9,6 +9,7 @@ import ru.practicum.explorewithme.dto.compilation.CompilationDto;
 import ru.practicum.explorewithme.dto.compilation.NewCompilationDto;
 import ru.practicum.explorewithme.dto.compilation.UpdateCompilationRequest;
 import ru.practicum.explorewithme.exception.NotFoundException;
+import ru.practicum.explorewithme.exception.ValidationException;
 import ru.practicum.explorewithme.mapper.CompilationMapper;
 import ru.practicum.explorewithme.model.Compilation;
 import ru.practicum.explorewithme.model.Event;
@@ -76,6 +77,15 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
+        if (size <= 0) {
+            throw new ValidationException("Size must be positive");
+        }
+
+        if (from < 0) {
+            throw new ValidationException("From must be non-negative");
+        }
+
+        int page = from / size;
         Pageable pageable = PageRequest.of(from / size, size);
         List<Compilation> compilations = compilationRepository.findByPinned(pinned, pageable);
         return compilations.stream()

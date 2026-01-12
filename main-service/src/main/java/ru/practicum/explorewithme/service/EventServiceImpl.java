@@ -129,6 +129,16 @@ public class EventServiceImpl implements EventService {
             Integer from,
             Integer size) {
 
+        if (size <= 0) {
+            throw new ValidationException("Size must be positive");
+        }
+
+        if (from < 0) {
+            throw new ValidationException("From must be non-negative");
+        }
+
+        int page = from / size;
+
         Pageable pageable = PageRequest.of(from / size, size);
         List<Event> events = eventRepository.findEventsByAdmin(
                 users, states, categories, rangeStart, rangeEnd, pageable);
@@ -182,11 +192,16 @@ public class EventServiceImpl implements EventService {
             Integer from,
             Integer size) {
 
-        if (size <= 0) throw new ValidationException("Size must be positive");
-        if (from < 0) throw new ValidationException("From must be non-negative");
-
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
             throw new ValidationException("Start date must be before end date");
+        }
+
+        if (size <= 0) {
+            throw new ValidationException("Size must be positive");
+        }
+
+        if (from < 0) {
+            throw new ValidationException("From must be non-negative");
         }
 
         int page = from / size;

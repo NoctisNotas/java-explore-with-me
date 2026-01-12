@@ -9,6 +9,7 @@ import ru.practicum.explorewithme.dto.category.CategoryDto;
 import ru.practicum.explorewithme.dto.category.NewCategoryDto;
 import ru.practicum.explorewithme.exception.ConflictException;
 import ru.practicum.explorewithme.exception.NotFoundException;
+import ru.practicum.explorewithme.exception.ValidationException;
 import ru.practicum.explorewithme.mapper.CategoryMapper;
 import ru.practicum.explorewithme.model.Category;
 import ru.practicum.explorewithme.repository.CategoryRepository;
@@ -63,6 +64,15 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDto> getCategories(Integer from, Integer size) {
+        if (size <= 0) {
+            throw new ValidationException("Size must be positive");
+        }
+
+        if (from < 0) {
+            throw new ValidationException("From must be non-negative");
+        }
+
+        int page = from / size;
         Pageable pageable = PageRequest.of(from / size, size);
         return categoryRepository.findAllCategories(pageable).stream()
                 .map(CategoryMapper::toCategoryDto)

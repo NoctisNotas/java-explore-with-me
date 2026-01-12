@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explorewithme.dto.user.NewUserRequest;
 import ru.practicum.explorewithme.dto.user.UserDto;
+import ru.practicum.explorewithme.exception.ValidationException;
 import ru.practicum.explorewithme.mapper.UserMapper;
 import ru.practicum.explorewithme.model.User;
 import ru.practicum.explorewithme.repository.UserRepository;
@@ -31,6 +32,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getUsers(List<Long> ids, Integer from, Integer size) {
+        if (size <= 0) {
+            throw new ValidationException("Size must be positive");
+        }
+
+        if (from < 0) {
+            throw new ValidationException("From must be non-negative");
+        }
+
+        int page = from / size;
         Pageable pageable = PageRequest.of(from / size, size);
 
         if (ids == null || ids.isEmpty()) {
