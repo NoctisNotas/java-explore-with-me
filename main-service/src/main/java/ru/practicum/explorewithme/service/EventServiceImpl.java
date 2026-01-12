@@ -64,6 +64,14 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException("User with id=" + userId + " was not found");
         }
 
+        if (size <= 0) {
+            throw new ValidationException("Size must be > 0");
+        }
+
+        if (from < 0) {
+            throw new ValidationException("From must be >= 0");
+        }
+
         Pageable pageable = PageRequest.of(from / size, size);
         List<Event> events = eventRepository.findByInitiatorId(userId, pageable);
 
@@ -174,17 +182,19 @@ public class EventServiceImpl implements EventService {
             Integer from,
             Integer size) {
 
+        if (size <= 0) throw new ValidationException("Size must be positive");
+        if (from < 0) throw new ValidationException("From must be non-negative");
+
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
             throw new ValidationException("Start date must be before end date");
         }
 
+        int page = from / size;
         Pageable pageable;
         if ("EVENT_DATE".equals(sort)) {
-            pageable = PageRequest.of(from / size, size, Sort.by("eventDate"));
-        } else if ("VIEWS".equals(sort)) {
-            pageable = PageRequest.of(from / size, size);
+            pageable = PageRequest.of(page, size, Sort.by("eventDate"));
         } else {
-            pageable = PageRequest.of(from / size, size);
+            pageable = PageRequest.of(page, size);
         }
 
         List<Event> events = eventRepository.findEventsByPublic(
