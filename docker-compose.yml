@@ -5,75 +5,43 @@ services:
     image: postgres:16.1
     container_name: stats-db
     environment:
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: password
       POSTGRES_DB: ewm_stats
-      POSTGRES_USER: stats
-      POSTGRES_PASSWORD: stats
     ports:
       - "6541:5432"
-    volumes:
-      - stats-db-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U stats"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    command: ["postgres", "-c", "log_statement=all"]
 
   stats-server:
     build: ./stats/stats-server
     container_name: stats-server
     ports:
       - "9090:9090"
-    depends_on:
-      stats-db:
-        condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://stats-db:5432/ewm_stats
-      SPRING_DATASOURCE_USERNAME: stats
-      SPRING_DATASOURCE_PASSWORD: stats
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      SPRING_DATASOURCE_USERNAME: app_user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
   ewm-db:
     image: postgres:16.1
     container_name: ewm-db
     environment:
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: password
       POSTGRES_DB: ewm_main
-      POSTGRES_USER: main
-      POSTGRES_PASSWORD: main
     ports:
       - "6542:5432"
-    volumes:
-      - ewm-db-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U main"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    command: ["postgres", "-c", "log_statement=all"]
 
   ewm-service:
     build: ./main-service
     container_name: ewm-service
     ports:
       - "8080:8080"
-    depends_on:
-      ewm-db:
-        condition: service_healthy
-      stats-server:
-        condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://ewm-db:5432/ewm_main
-      SPRING_DATASOURCE_USERNAME: main
-      SPRING_DATASOURCE_PASSWORD: main
+      SPRING_DATASOURCE_USERNAME: app_user
+      SPRING_DATASOURCE_PASSWORD: password
       STATS_SERVICE_URL: http://stats-server:9090
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-volumes:
-  stats-db-data:
-  ewm-db-data:
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
