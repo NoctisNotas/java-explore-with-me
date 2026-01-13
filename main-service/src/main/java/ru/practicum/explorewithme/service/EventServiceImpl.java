@@ -196,34 +196,18 @@ public class EventServiceImpl implements EventService {
         if (from == null) from = 0;
         if (size == null) size = 10;
 
-        List<Event> events = eventRepository.findByState(EventState.PUBLISHED);
+        Pageable pageable = PageRequest.of(from / size, size);
+
+        List<Event> events = eventRepository.findPublishedEvents(
+                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, pageable);
 
         List<Event> filteredEvents = events.stream()
                 .filter(e -> e != null)
                 .filter(e -> e.getInitiator() != null)
                 .filter(e -> e.getCategory() != null)
-                .filter(e -> text == null || text.isEmpty() ||
-                        (e.getAnnotation() != null &&
-                                e.getAnnotation().toLowerCase().contains(text.toLowerCase())) ||
-                        (e.getDescription() != null &&
-                                e.getDescription().toLowerCase().contains(text.toLowerCase())))
-                .filter(e -> categories == null || categories.isEmpty() ||
-                        (e.getCategory() != null && e.getCategory().getId() != null &&
-                                categories.contains(e.getCategory().getId())))
-                .filter(e -> paid == null || e.getPaid() == paid)
-                .filter(e -> rangeStart == null || e.getEventDate().isAfter(rangeStart))
-                .filter(e -> rangeEnd == null || e.getEventDate().isBefore(rangeEnd))
-                .filter(e -> onlyAvailable == null || !onlyAvailable ||
-                        e.getParticipantLimit() == 0 ||
-                        e.getConfirmedRequests() < e.getParticipantLimit())
                 .collect(Collectors.toList());
 
-        List<Event> pagedEvents = filteredEvents.stream()
-                .skip(from)
-                .limit(size)
-                .collect(Collectors.toList());
-
-        return pagedEvents.stream()
+        return filteredEvents.stream()
                 .map(EventMapper::toEventShortDto)
                 .collect(Collectors.toList());
     }

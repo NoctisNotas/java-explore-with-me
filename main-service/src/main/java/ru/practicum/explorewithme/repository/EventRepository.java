@@ -50,7 +50,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             @Param("onlyAvailable") Boolean onlyAvailable,
             Pageable pageable);
 
-    List<Event> findByState(EventState state);
-
     Long countByCategoryId(Long categoryId);
 }
