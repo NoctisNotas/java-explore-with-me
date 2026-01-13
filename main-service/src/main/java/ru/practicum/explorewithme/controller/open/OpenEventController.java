@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.explorewithme.dto.event.EventFullDto;
 import ru.practicum.explorewithme.dto.event.EventShortDto;
+import ru.practicum.explorewithme.exception.ValidationException;
 import ru.practicum.explorewithme.service.EventService;
 import ru.practicum.explorewithme.service.StatsService;
 import ru.practicum.explorewithme.util.DateTimePattern;
@@ -38,6 +39,10 @@ public class OpenEventController {
             @RequestParam(defaultValue = "0") @Min(0) Integer from,
             @RequestParam(defaultValue = "10") @Min(1) Integer size,
             HttpServletRequest request) {
+
+        if ((rangeStart == null && rangeEnd != null) || (rangeStart != null && rangeEnd == null)) {
+            throw new ValidationException("Both rangeStart and rangeEnd must be specified together");
+        }
 
         statsService.saveHit("main-service", request.getRequestURI(), request.getRemoteAddr());
         return eventService.getEventsByPublic(
