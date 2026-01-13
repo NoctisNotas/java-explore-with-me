@@ -197,17 +197,9 @@ public class EventServiceImpl implements EventService {
         if (size == null) size = 10;
 
         Pageable pageable = PageRequest.of(from / size, size);
+        List<Event> events = eventRepository.findPublishedEvents(pageable);
 
-        List<Event> events = eventRepository.findPublishedEvents(
-                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, pageable);
-
-        List<Event> filteredEvents = events.stream()
-                .filter(e -> e != null)
-                .filter(e -> e.getInitiator() != null)
-                .filter(e -> e.getCategory() != null)
-                .collect(Collectors.toList());
-
-        return filteredEvents.stream()
+        return events.stream()
                 .map(EventMapper::toEventShortDto)
                 .collect(Collectors.toList());
     }
