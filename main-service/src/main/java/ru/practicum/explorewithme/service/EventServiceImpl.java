@@ -1,6 +1,7 @@
 package ru.practicum.explorewithme.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
@@ -192,6 +194,10 @@ public class EventServiceImpl implements EventService {
             String sort,
             Integer from,
             Integer size) {
+
+        log.info("=== DEBUG: getEventsByPublic вызван ===");
+        log.info("Параметры: text='{}', rangeStart={}, rangeEnd={}, from={}, size={}",
+                text, rangeStart, rangeEnd, from, size);
 
         if (size == null || size <= 0) {
             throw new ValidationException("Size must be positive");
