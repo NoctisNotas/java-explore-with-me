@@ -31,8 +31,15 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             LocalDateTime rangeEnd,
             Pageable pageable);
 
-    @Query("SELECT e FROM Event e WHERE e.state = 'PUBLISHED'")
-    List<Event> findPublishedEvents(Pageable pageable);
+    @Query("SELECT e FROM Event e WHERE e.state = 'PUBLISHED' " +
+            "AND (:text IS NULL OR :text = '' OR " +
+            "     LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%')) OR " +
+            "     LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))) " +
+            "AND (:categories IS NULL OR e.category.id IN :categories)")
+    List<Event> findPublishedEvents(
+            @Param("text") String text,
+            @Param("categories") List<Long> categories,
+            Pageable pageable);
 
     Long countByCategoryId(Long categoryId);
 }

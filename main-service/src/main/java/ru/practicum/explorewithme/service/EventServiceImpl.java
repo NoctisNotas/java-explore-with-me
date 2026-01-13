@@ -198,10 +198,11 @@ public class EventServiceImpl implements EventService {
         }
 
         if (from == null) from = 0;
-        if (size == null) size = 10;
+        if (size == null) size = 10; // ← ВАЖНО: по умолчанию 10!
 
         Pageable pageable = PageRequest.of(from / size, size);
-        List<Event> events = eventRepository.findPublishedEvents(pageable);
+
+        List<Event> events = eventRepository.findPublishedEvents(text, categories, pageable);
 
         return events.stream()
                 .map(EventMapper::toEventShortDto)
