@@ -35,13 +35,13 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND ((:text IS NULL OR :text = '') " +
             "      OR e.annotation LIKE CONCAT('%', :text, '%') " +
             "      OR e.description LIKE CONCAT('%', :text, '%')) " +
-            "AND (:categories IS NULL OR e.category.id IN :categories) " +
+            "AND (COALESCE(:categories, NULL) IS NULL OR e.category.id IN (:categories)) " +
             "AND (:paid IS NULL OR e.paid = :paid) " +
             "AND (:rangeStart IS NULL OR e.eventDate >= :rangeStart) " +
             "AND (:rangeEnd IS NULL OR e.eventDate <= :rangeEnd) " +
             "AND (:onlyAvailable IS NULL OR " +
             "      e.participantLimit = 0 OR " +
-            "      e.confirmedRequests < e.participantLimit)")
+            "      e.confirmedRequests < e.participantLimit))")
     List<Event> findEventsByPublic(
             String text,
             List<Long> categories,
