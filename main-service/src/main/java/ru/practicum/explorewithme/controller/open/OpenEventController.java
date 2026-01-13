@@ -1,6 +1,7 @@
 package ru.practicum.explorewithme.controller.open;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +33,8 @@ public class OpenEventController {
             @RequestParam(required = false) @DateTimeFormat(pattern = DateTimePattern.DATE_TIME) LocalDateTime rangeEnd,
             @RequestParam(required = false) Boolean onlyAvailable,
             @RequestParam(required = false) String sort,
-            @RequestParam(defaultValue = "0") Integer from,
-            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "10") @Min(1) Integer size,
             HttpServletRequest request) {
 
         statsService.saveHit("main-service", request.getRequestURI(), request.getRemoteAddr());
