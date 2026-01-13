@@ -23,6 +23,15 @@ public class ErrorHandler {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(DateTimePattern.DATE_TIME);
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.error("IllegalArgumentException: {}", e.getMessage());
+        return buildErrorResponse(HttpStatus.BAD_REQUEST.value(),
+                "Incorrectly made request.",
+                e.getMessage());
+    }
+
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, Object> handleNotFoundException(NotFoundException e) {
@@ -96,25 +105,12 @@ public class ErrorHandler {
         );
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, Object> handleException(Exception e) {
-        log.error("Exception: {}", e.getMessage(), e);
-        return buildErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal server error.",
-                e.getMessage()
-        );
-    }
-
     private Map<String, Object> buildErrorResponse(int status, String error, String message) {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("status", status);
         response.put("error", error);
         response.put("message", message);
         response.put("timestamp", LocalDateTime.now().format(FORMATTER));
-
-        log.debug("Returning error response: {}", response);
         return response;
     }
 }

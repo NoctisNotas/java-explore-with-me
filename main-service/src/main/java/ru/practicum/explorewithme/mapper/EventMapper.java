@@ -33,14 +33,12 @@ public class EventMapper {
 
         EventFullDto dto = new EventFullDto();
         dto.setId(event.getId());
-        dto.setAnnotation(event.getAnnotation() != null ? event.getAnnotation() : "");
-        dto.setDescription(event.getDescription() != null ? event.getDescription() : "");
-        dto.setTitle(event.getTitle() != null ? event.getTitle() : "");
+        dto.setAnnotation(event.getAnnotation());
+        dto.setDescription(event.getDescription());
+        dto.setTitle(event.getTitle());
 
         if (event.getCategory() != null) {
             dto.setCategory(CategoryMapper.toCategoryDto(event.getCategory()));
-        } else {
-            throw new IllegalArgumentException("Event category cannot be null for EventFullDto");
         }
 
         if (event.getConfirmedRequests() != null) {
@@ -54,30 +52,24 @@ public class EventMapper {
 
         if (event.getInitiator() != null) {
             dto.setInitiator(UserMapper.toUserShortDto(event.getInitiator()));
-        } else {
-            throw new IllegalArgumentException("Event initiator cannot be null for EventFullDto");
         }
 
         if (event.getLat() != null && event.getLon() != null) {
             dto.setLocation(new ru.practicum.explorewithme.dto.event.EventLocation(
                     event.getLat(), event.getLon()
             ));
-        } else {
-            throw new IllegalArgumentException("Event location cannot be null for EventFullDto");
         }
 
-        dto.setPaid(event.getPaid() != null ? event.getPaid() : false);
-        dto.setParticipantLimit(event.getParticipantLimit() != null ? event.getParticipantLimit() : 0);
+        dto.setPaid(event.getPaid());
+        dto.setParticipantLimit(event.getParticipantLimit());
         dto.setPublishedOn(event.getPublishedOn());
-        dto.setRequestModeration(event.getRequestModeration() != null ? event.getRequestModeration() : true);
+        dto.setRequestModeration(event.getRequestModeration());
 
         if (event.getState() != null) {
             dto.setState(event.getState().name());
-        } else {
-            throw new IllegalArgumentException("Event state cannot be null for EventFullDto");
         }
 
-        dto.setViews(event.getViews() != null ? event.getViews() : 0L);
+        dto.setViews(event.getViews());
         return dto;
     }
 
@@ -88,13 +80,11 @@ public class EventMapper {
 
         EventShortDto dto = new EventShortDto();
         dto.setId(event.getId());
-        dto.setAnnotation(event.getAnnotation() != null ? event.getAnnotation() : "");
-        dto.setTitle(event.getTitle() != null ? event.getTitle() : "");
+        dto.setAnnotation(event.getAnnotation());
+        dto.setTitle(event.getTitle());
 
         if (event.getCategory() != null) {
             dto.setCategory(CategoryMapper.toCategoryDto(event.getCategory()));
-        } else {
-            throw new IllegalArgumentException("Event category cannot be null for EventShortDto");
         }
 
         if (event.getConfirmedRequests() != null) {
@@ -107,12 +97,10 @@ public class EventMapper {
 
         if (event.getInitiator() != null) {
             dto.setInitiator(UserMapper.toUserShortDto(event.getInitiator()));
-        } else {
-            throw new IllegalArgumentException("Event initiator cannot be null for EventShortDto");
         }
 
-        dto.setPaid(event.getPaid() != null ? event.getPaid() : false);
-        dto.setViews(event.getViews() != null ? event.getViews() : 0L);
+        dto.setPaid(event.getPaid());
+        dto.setViews(event.getViews());
 
         return dto;
     }
