@@ -1,6 +1,7 @@
 package ru.practicum.explorewithme.controller.admin;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,8 +32,8 @@ public class AdminEventController {
             @RequestParam(required = false) List<Long> categories,
             @RequestParam(required = false) @DateTimeFormat(pattern = DateTimePattern.DATE_TIME) LocalDateTime rangeStart,
             @RequestParam(required = false) @DateTimeFormat(pattern = DateTimePattern.DATE_TIME) LocalDateTime rangeEnd,
-            @RequestParam(defaultValue = "0") Integer from,
-            @RequestParam(defaultValue = "10") Integer size) {
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "10") @Min(1) Integer size) {
 
         return eventService.getEventsByAdmin(
                 users, states, categories, rangeStart, rangeEnd, from, size);
