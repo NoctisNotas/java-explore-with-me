@@ -96,16 +96,16 @@ public class ErrorHandler {
         );
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, Object> handleException(Exception e) {
-        log.error("Exception: {}", e.getMessage(), e);
-        return buildErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal server error.",
-                e.getMessage()
-        );
-    }
+//    @ExceptionHandler(Exception.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public Map<String, Object> handleException(Exception e) {
+//        log.error("Exception: {}", e.getMessage(), e);
+//        return buildErrorResponse(
+//                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+//                "Internal server error.",
+//                e.getMessage()
+//        );
+//    }
 
     private Map<String, Object> buildErrorResponse(int status, String error, String message) {
         Map<String, Object> response = new LinkedHashMap<>();
