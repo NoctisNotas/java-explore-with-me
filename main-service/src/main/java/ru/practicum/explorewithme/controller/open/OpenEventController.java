@@ -40,10 +40,7 @@ public class OpenEventController {
             @RequestParam(defaultValue = "10") @Min(1) Integer size,
             HttpServletRequest request) {
 
-        System.out.println("DEBUG: rangeStart = " + rangeStart + ", rangeEnd = " + rangeEnd);
-
         if ((rangeStart == null && rangeEnd != null) || (rangeStart != null && rangeEnd == null)) {
-            System.out.println("DEBUG: Throwing IllegalArgumentException!");
             throw new IllegalArgumentException("Both rangeStart and rangeEnd must be specified together");
         }
 

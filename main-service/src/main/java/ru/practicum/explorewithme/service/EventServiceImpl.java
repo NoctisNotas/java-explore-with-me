@@ -138,8 +138,6 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("From must be non-negative");
         }
 
-        int page = from / size;
-
         Pageable pageable = PageRequest.of(from / size, size);
         List<Event> events = eventRepository.findEventsByAdmin(
                 users, states, categories, rangeStart, rangeEnd, pageable);
@@ -198,7 +196,7 @@ public class EventServiceImpl implements EventService {
         }
 
         if (from == null) from = 0;
-        if (size == null) size = 10; // ← ВАЖНО: по умолчанию 10!
+        if (size == null) size = 10;
 
         Pageable pageable = PageRequest.of(from / size, size);
 
