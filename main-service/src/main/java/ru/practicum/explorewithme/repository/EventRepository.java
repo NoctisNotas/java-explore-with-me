@@ -36,8 +36,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "      OR e.description LIKE '%' || :text || '%') " +
             "AND (:categories IS NULL OR e.category.id IN (:categories)) " +
             "AND (:paid IS NULL OR e.paid = :paid) " +
-            "AND (:rangeStart IS NULL OR e.eventDate >= :rangeStart) " +
-            "AND (:rangeEnd IS NULL OR e.eventDate <= :rangeEnd) " +
+            "AND (COALESCE(:rangeStart, e.eventDate) <= e.eventDate) " +
+            "AND (COALESCE(:rangeEnd, e.eventDate) >= e.eventDate) " +
             "AND (:onlyAvailable IS NULL OR " +
             "      e.participantLimit = 0 OR " +
             "      e.confirmedRequests < e.participantLimit))")
