@@ -200,15 +200,16 @@ public class EventServiceImpl implements EventService {
 
         List<Event> filteredEvents = events.stream()
                 .filter(e -> e != null)
-                .filter(e -> e.getCategory() != null) // категория не должна быть null
-                .filter(e -> e.getInitiator() != null) // инициатор не должен быть null
+                .filter(e -> e.getCategory() != null && e.getCategory().getId() != null)
+                .filter(e -> e.getInitiator() != null && e.getInitiator().getId() != null)
                 .filter(e -> text == null || text.isEmpty() ||
                         (e.getAnnotation() != null &&
                                 e.getAnnotation().toLowerCase().contains(text.toLowerCase())) ||
                         (e.getDescription() != null &&
                                 e.getDescription().toLowerCase().contains(text.toLowerCase())))
                 .filter(e -> categories == null || categories.isEmpty() ||
-                        categories.contains(e.getCategory().getId()))
+                        (e.getCategory() != null && e.getCategory().getId() != null &&
+                                categories.contains(e.getCategory().getId())))
                 .filter(e -> paid == null || e.getPaid() == paid)
                 .filter(e -> rangeStart == null || e.getEventDate().isAfter(rangeStart))
                 .filter(e -> rangeEnd == null || e.getEventDate().isBefore(rangeEnd))
