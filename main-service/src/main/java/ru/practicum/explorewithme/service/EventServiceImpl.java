@@ -193,6 +193,10 @@ public class EventServiceImpl implements EventService {
             Integer from,
             Integer size) {
 
+        if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
+            throw new ValidationException("rangeStart must be before rangeEnd");
+        }
+
         if (from == null) from = 0;
         if (size == null) size = 10;
 
