@@ -193,37 +193,19 @@ public class EventServiceImpl implements EventService {
             Integer from,
             Integer size) {
 
-        if (from == null) from = 0;
-        if (size == null) size = 10;
+        if (from < 0) throw new ValidationException("From must be non-negative");
+        if (size <= 0) throw new ValidationException("Size must be positive");
 
-        List<Event> events = eventRepository.findByState(EventState.PUBLISHED);
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.DESC, "eventDate"));
 
-        List<Event> filteredEvents = events.stream()
-                .filter(e -> e != null)
-                .filter(e -> e.getCategory() != null && e.getCategory().getId() != null)
-                .filter(e -> e.getInitiator() != null && e.getInitiator().getId() != null)
-                .filter(e -> text == null || text.isEmpty() ||
-                        (e.getAnnotation() != null &&
-                                e.getAnnotation().toLowerCase().contains(text.toLowerCase())) ||
-                        (e.getDescription() != null &&
-                                e.getDescription().toLowerCase().contains(text.toLowerCase())))
-                .filter(e -> categories == null || categories.isEmpty() ||
-                        (e.getCategory() != null && e.getCategory().getId() != null &&
-                                categories.contains(e.getCategory().getId())))
-                .filter(e -> paid == null || e.getPaid() == paid)
-                .filter(e -> rangeStart == null || e.getEventDate().isAfter(rangeStart))
-                .filter(e -> rangeEnd == null || e.getEventDate().isBefore(rangeEnd))
-                .filter(e -> onlyAvailable == null || !onlyAvailable ||
-                        e.getParticipantLimit() == 0 ||
-                        e.getConfirmedRequests() < e.getParticipantLimit())
-                .collect(Collectors.toList());
+        if (rangeStart == null && rangeEnd == null) {
+            rangeStart = LocalDateTime.now();
+        }
 
-        List<Event> pagedEvents = filteredEvents.stream()
-                .skip(from)
-                .limit(size)
-                .collect(Collectors.toList());
+        List<Event> events = eventRepository.findPublishedEvents(
+                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, pageable);
 
-        return pagedEvents.stream()
+        return events.stream()
                 .map(EventMapper::toEventShortDto)
                 .collect(Collectors.toList());
     }

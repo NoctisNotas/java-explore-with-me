@@ -39,6 +39,8 @@ public class EventMapper {
 
         if (event.getCategory() != null) {
             dto.setCategory(CategoryMapper.toCategoryDto(event.getCategory()));
+        } else {
+            throw new IllegalArgumentException("Event category cannot be null for EventFullDto");
         }
 
         if (event.getConfirmedRequests() != null) {
@@ -52,12 +54,16 @@ public class EventMapper {
 
         if (event.getInitiator() != null) {
             dto.setInitiator(UserMapper.toUserShortDto(event.getInitiator()));
+        } else {
+            throw new IllegalArgumentException("Event initiator cannot be null for EventFullDto");
         }
 
         if (event.getLat() != null && event.getLon() != null) {
             dto.setLocation(new ru.practicum.explorewithme.dto.event.EventLocation(
                     event.getLat(), event.getLon()
             ));
+        } else {
+            throw new IllegalArgumentException("Event location cannot be null for EventFullDto");
         }
 
         dto.setPaid(event.getPaid() != null ? event.getPaid() : false);
@@ -67,6 +73,8 @@ public class EventMapper {
 
         if (event.getState() != null) {
             dto.setState(event.getState().name());
+        } else {
+            throw new IllegalArgumentException("Event state cannot be null for EventFullDto");
         }
 
         dto.setViews(event.getViews() != null ? event.getViews() : 0L);
@@ -85,6 +93,8 @@ public class EventMapper {
 
         if (event.getCategory() != null) {
             dto.setCategory(CategoryMapper.toCategoryDto(event.getCategory()));
+        } else {
+            throw new IllegalArgumentException("Event category cannot be null for EventShortDto");
         }
 
         if (event.getConfirmedRequests() != null) {
@@ -97,6 +107,8 @@ public class EventMapper {
 
         if (event.getInitiator() != null) {
             dto.setInitiator(UserMapper.toUserShortDto(event.getInitiator()));
+        } else {
+            throw new IllegalArgumentException("Event initiator cannot be null for EventShortDto");
         }
 
         dto.setPaid(event.getPaid() != null ? event.getPaid() : false);
