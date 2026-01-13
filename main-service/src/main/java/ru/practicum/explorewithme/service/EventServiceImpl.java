@@ -199,6 +199,9 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepository.findByState(EventState.PUBLISHED);
 
         List<Event> filteredEvents = events.stream()
+                .filter(e -> e != null)
+                .filter(e -> e.getCategory() != null) // категория не должна быть null
+                .filter(e -> e.getInitiator() != null) // инициатор не должен быть null
                 .filter(e -> text == null || text.isEmpty() ||
                         (e.getAnnotation() != null &&
                                 e.getAnnotation().toLowerCase().contains(text.toLowerCase())) ||
