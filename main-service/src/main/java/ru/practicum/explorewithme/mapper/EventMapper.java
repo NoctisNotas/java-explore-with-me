@@ -27,39 +27,81 @@ public class EventMapper {
     }
 
     public static EventFullDto toEventFullDto(Event event) {
+        if (event == null) {
+            return null;
+        }
+
         EventFullDto dto = new EventFullDto();
         dto.setId(event.getId());
-        dto.setAnnotation(event.getAnnotation());
-        dto.setCategory(CategoryMapper.toCategoryDto(event.getCategory()));
-        dto.setConfirmedRequests(event.getConfirmedRequests().longValue());
+        dto.setAnnotation(event.getAnnotation() != null ? event.getAnnotation() : "");
+        dto.setDescription(event.getDescription() != null ? event.getDescription() : "");
+        dto.setTitle(event.getTitle() != null ? event.getTitle() : "");
+
+        if (event.getCategory() != null) {
+            dto.setCategory(CategoryMapper.toCategoryDto(event.getCategory()));
+        }
+
+        if (event.getConfirmedRequests() != null) {
+            dto.setConfirmedRequests(event.getConfirmedRequests().longValue());
+        } else {
+            dto.setConfirmedRequests(0L);
+        }
+
         dto.setCreatedOn(event.getCreatedOn());
-        dto.setDescription(event.getDescription());
         dto.setEventDate(event.getEventDate());
-        dto.setInitiator(UserMapper.toUserShortDto(event.getInitiator()));
-        dto.setLocation(new ru.practicum.explorewithme.dto.event.EventLocation(
-                event.getLat(), event.getLon()
-        ));
-        dto.setPaid(event.getPaid());
-        dto.setParticipantLimit(event.getParticipantLimit());
+
+        if (event.getInitiator() != null) {
+            dto.setInitiator(UserMapper.toUserShortDto(event.getInitiator()));
+        }
+
+        if (event.getLat() != null && event.getLon() != null) {
+            dto.setLocation(new ru.practicum.explorewithme.dto.event.EventLocation(
+                    event.getLat(), event.getLon()
+            ));
+        }
+
+        dto.setPaid(event.getPaid() != null ? event.getPaid() : false);
+        dto.setParticipantLimit(event.getParticipantLimit() != null ? event.getParticipantLimit() : 0);
         dto.setPublishedOn(event.getPublishedOn());
-        dto.setRequestModeration(event.getRequestModeration());
-        dto.setState(event.getState().name());
-        dto.setTitle(event.getTitle());
+        dto.setRequestModeration(event.getRequestModeration() != null ? event.getRequestModeration() : true);
+
+        if (event.getState() != null) {
+            dto.setState(event.getState().name());
+        }
+
         dto.setViews(event.getViews() != null ? event.getViews() : 0L);
         return dto;
     }
 
     public static EventShortDto toEventShortDto(Event event) {
+        if (event == null) {
+            return null;
+        }
+
         EventShortDto dto = new EventShortDto();
         dto.setId(event.getId());
-        dto.setAnnotation(event.getAnnotation());
-        dto.setCategory(CategoryMapper.toCategoryDto(event.getCategory()));
-        dto.setConfirmedRequests(event.getConfirmedRequests().longValue());
+        dto.setAnnotation(event.getAnnotation() != null ? event.getAnnotation() : "");
+        dto.setTitle(event.getTitle() != null ? event.getTitle() : "");
+
+        if (event.getCategory() != null) {
+            dto.setCategory(CategoryMapper.toCategoryDto(event.getCategory()));
+        }
+
+        if (event.getConfirmedRequests() != null) {
+            dto.setConfirmedRequests(event.getConfirmedRequests().longValue());
+        } else {
+            dto.setConfirmedRequests(0L);
+        }
+
         dto.setEventDate(event.getEventDate());
-        dto.setInitiator(UserMapper.toUserShortDto(event.getInitiator()));
-        dto.setPaid(event.getPaid());
-        dto.setTitle(event.getTitle());
+
+        if (event.getInitiator() != null) {
+            dto.setInitiator(UserMapper.toUserShortDto(event.getInitiator()));
+        }
+
+        dto.setPaid(event.getPaid() != null ? event.getPaid() : false);
         dto.setViews(event.getViews() != null ? event.getViews() : 0L);
+
         return dto;
     }
 }
