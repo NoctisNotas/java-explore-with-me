@@ -48,3 +48,13 @@ CREATE TABLE IF NOT EXISTS compilation_events (
     event_id BIGINT NOT NULL REFERENCES events(id),
     PRIMARY KEY (compilation_id, event_id)
 );
+
+CREATE TABLE IF NOT EXISTS comments (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    text VARCHAR(2000) NOT NULL,
+    author_id BIGINT NOT NULL REFERENCES users(id),
+    event_id BIGINT NOT NULL REFERENCES events(id),
+    created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    moderator_comment VARCHAR(500)
+);
