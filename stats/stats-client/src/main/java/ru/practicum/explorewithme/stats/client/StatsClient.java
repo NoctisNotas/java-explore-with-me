@@ -9,8 +9,6 @@ import ru.practicum.explorewithme.stats.dto.DateTimePattern;
 import ru.practicum.explorewithme.stats.dto.EndpointHitDto;
 import ru.practicum.explorewithme.stats.dto.ViewStatsDto;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -42,22 +40,24 @@ public class StatsClient {
             List<String> uris,
             boolean unique
     ) {
-        String encodedStart = URLEncoder.encode(start.format(FORMATTER), StandardCharsets.UTF_8);
-        String encodedEnd = URLEncoder.encode(end.format(FORMATTER), StandardCharsets.UTF_8);
+        String startStr = start.format(FORMATTER);
+        String endStr = end.format(FORMATTER);
 
         UriComponentsBuilder builder = UriComponentsBuilder
                 .fromHttpUrl(serverUrl + "/stats")
-                .queryParam("start", encodedStart)
-                .queryParam("end", encodedEnd)
+                .queryParam("start", startStr)
+                .queryParam("end", endStr)
                 .queryParam("unique", unique);
 
         if (uris != null && !uris.isEmpty()) {
-            builder.queryParam("uris", String.join(",", uris));
+            for (String uri : uris) {
+                builder.queryParam("uris", uri);
+            }
         }
 
         ResponseEntity<ViewStatsDto[]> response =
                 restTemplate.exchange(
-                        builder.toUriString(),
+                        builder.build().toUri(),
                         HttpMethod.GET,
                         null,
                         ViewStatsDto[].class

@@ -1,0 +1,6 @@
+CREATE USER app_user WITH PASSWORD 'password';
+CREATE DATABASE ewm_stats;
+GRANT ALL PRIVILEGES ON DATABASE ewm_stats TO app_user;
+
+CREATE DATABASE ewm_main;
+GRANT ALL PRIVILEGES ON DATABASE ewm_main TO app_user;
