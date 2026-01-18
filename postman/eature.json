@@ -1,0 +1,156 @@
+{
+  "info": {
+    "name": "ExploreWithMe Comments Feature Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Public - Get event comments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/events/1/comments?from=0&size=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["events", "1", "comments"],
+          "query": [
+            {"key": "from", "value": "0"},
+            {"key": "size", "value": "10"}
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. Private - Create comment (valid)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Valid comment text with more than 10 characters\",\n  \"eventId\": 1\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/1/comments",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "1", "comments"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. Private - Create comment (invalid text)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"short\",\n  \"eventId\": 1\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/1/comments",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "1", "comments"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. Private - Update comment",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Updated comment text with more than 10 characters\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/1/comments/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "1", "comments", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. Private - Delete comment",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/1/comments/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "1", "comments", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. Admin - Approve comment",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"statusAction\": \"APPROVE\",\n  \"moderatorComment\": \"Comment approved\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/admin/comments/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["admin", "comments", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "7. Admin - Get comments with filters",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/comments?from=0&size=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["admin", "comments"],
+          "query": [
+            {"key": "from", "value": "0"},
+            {"key": "size", "value": "10"}
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          "pm.test(\"Status code is 2xx or 4xx\", function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204, 400, 404, 409]);",
+          "});",
+          "",
+          "if (pm.response.code !== 204) {",
+          "    pm.test(\"Response has JSON body\", function () {",
+          "        pm.response.to.be.json;",
+          "    });",
+          "}"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
+}
