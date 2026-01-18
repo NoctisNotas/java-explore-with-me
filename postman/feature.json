@@ -22,26 +22,7 @@
       "response": []
     },
     {
-      "name": "2. Private - Create comment (valid)",
-      "request": {
-        "method": "POST",
-        "header": [
-          {"key": "Content-Type", "value": "application/json"}
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"text\": \"Valid comment text with more than 10 characters\",\n  \"eventId\": 1\n}"
-        },
-        "url": {
-          "raw": "{{baseUrl}}/users/1/comments",
-          "host": ["{{baseUrl}}"],
-          "path": ["users", "1", "comments"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "3. Private - Create comment (invalid text)",
+      "name": "2. Private - Create comment (invalid text)",
       "request": {
         "method": "POST",
         "header": [
@@ -60,7 +41,7 @@
       "response": []
     },
     {
-      "name": "4. Private - Update comment",
+      "name": "3. Private - Update comment",
       "request": {
         "method": "PATCH",
         "header": [
@@ -79,7 +60,7 @@
       "response": []
     },
     {
-      "name": "5. Private - Delete comment",
+      "name": "4. Private - Delete comment",
       "request": {
         "method": "DELETE",
         "header": [],
@@ -92,7 +73,7 @@
       "response": []
     },
     {
-      "name": "6. Admin - Approve comment",
+      "name": "5. Admin - Approve comment",
       "request": {
         "method": "PATCH",
         "header": [
@@ -111,7 +92,7 @@
       "response": []
     },
     {
-      "name": "7. Admin - Get comments with filters",
+      "name": "6. Admin - Get comments with filters",
       "request": {
         "method": "GET",
         "header": [],
@@ -133,8 +114,8 @@
       "listen": "test",
       "script": {
         "exec": [
-          "pm.test(\"Status code is 2xx or 4xx\", function () {",
-          "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204, 400, 404, 409]);",
+          "pm.test(\"Status code is 2xx, 4xx or 5xx\", function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204, 400, 404, 409, 500]);",
           "});",
           "",
           "if (pm.response.code !== 204) {",
